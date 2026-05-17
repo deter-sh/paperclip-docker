@@ -1,0 +1,32 @@
+services:
+  paperclip:
+    build: .
+    ports:
+      - '3100:3100'
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3100
+      - SERVE_UI=true
+      - PAPERCLIP_HOME=/paperclip
+      - PAPERCLIP_DEPLOYMENT_MODE=authenticated
+      - PAPERCLIP_DEPLOYMENT_EXPOSURE=private
+      - 'PAPERCLIP_PUBLIC_URL=${PAPERCLIP_PUBLIC_URL}'
+      - 'BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}'
+      - 'DATABASE_URL=${DATABASE_URL}'
+      - 'OPENAI_API_KEY=${OPENAI_API_KEY}'
+      - 'ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}'
+    volumes:
+      - 'paperclip-data:/paperclip'
+    restart: unless-stopped
+  db:
+    image: 'postgres:16-alpine'
+    environment:
+      - POSTGRES_DB=paperclip
+      - POSTGRES_USER=paperclip
+      - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}'
+    volumes:
+      - 'postgres-data:/var/lib/postgresql/data'
+    restart: unless-stopped
+volumes:
+  paperclip-data: null
+  postgres-data: null
